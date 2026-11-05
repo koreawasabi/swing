@@ -110,6 +110,35 @@
 		@media (prefers-reduced-motion: reduce) {
 			*, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 		}
+
+		#stay-timer {
+			position: fixed;
+			bottom: 24px;
+			right: 24px;
+			background-color: var(--green);
+			color: var(--paper);
+			padding: 10px 16px;
+			border-radius: 20px;
+			font-size: 13px;
+			font-family: var(--sans);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			z-index: 1000;
+			opacity: 0.9;
+			transition: opacity 0.3s ease;
+		}
+
+		#stay-timer:hover {
+			opacity: 1;
+		}
+
+		@media (max-width: 700px) {
+			#stay-timer {
+				bottom: 16px;
+				right: 16px;
+				font-size: 12px;
+				padding: 8px 14px;
+			}
+		}
 	</style>
 </head>
 <body>
@@ -209,6 +238,25 @@
 			document.querySelector("#form-message").textContent = "구독 신청이 완료됐어요. 고맙습니다.";
 			event.currentTarget.reset();
 		});
+
+		// Timer logic
+		window.addEventListener('DOMContentLoaded', () => {
+			const startTime = Date.now();
+			const timerElement = document.getElementById('stay-timer');
+
+			setInterval(() => {
+				const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+				const minutes = Math.floor(elapsedSeconds / 60);
+				const seconds = elapsedSeconds % 60;
+
+				if (minutes > 0) {
+					timerElement.textContent = `머문 시간 ${minutes}분 ${seconds}초`;
+				} else {
+					timerElement.textContent = `머문 시간 ${seconds}초`;
+				}
+			}, 1000);
+		});
 	</script>
+	<div id="stay-timer">머문 시간 0초</div>
 </body>
 </html>
