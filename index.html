@@ -59,6 +59,7 @@
 			display: flex;
 			align-items: center;
 			gap: 8px;
+			flex-wrap: wrap;
 		}
 		.status-dot {
 			width: 8px;
@@ -125,13 +126,40 @@
 			align-items: center;
 			justify-content: space-between;
 			border-bottom: 1px solid var(--line);
+			gap: 16px;
 		}
 		.brand { font-family: var(--serif); font-size: 24px; font-weight: 700; letter-spacing: 0; }
 		.brand span { color: var(--green); }
-		nav { display: flex; align-items: center; gap: 28px; font-size: 13px; color: #52584f; }
+		nav { display: flex; align-items: center; gap: 24px; font-size: 13px; color: #52584f; flex-wrap: wrap; }
 		nav a { transition: color .2s ease; }
 		nav a:hover { color: var(--green); }
 		.nav-note { font-size: 11px; color: var(--muted); letter-spacing: 0; }
+
+		/* 머문 시간 타이머 배지 */
+		.stay-timer-pill {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 4px 11px;
+			border-radius: 999px;
+			background: var(--green-soft);
+			border: 1px solid #cdd8cd;
+			color: var(--green-dark);
+			font-size: 11.5px;
+			font-weight: 500;
+			font-variant-numeric: tabular-nums;
+		}
+		.stay-timer-dot {
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background: var(--green);
+			animation: pulseDot 2s infinite ease-in-out;
+		}
+		@keyframes pulseDot {
+			0%, 100% { opacity: 0.45; transform: scale(0.9); }
+			50% { opacity: 1; transform: scale(1.15); }
+		}
 
 		.intro {
 			padding: 66px 0 42px;
@@ -673,9 +701,9 @@
 
 		@media (max-width: 700px) {
 			.wrap { width: min(100% - 36px, 520px); }
-			header { height: 68px; }
+			header { height: auto; padding: 14px 0; flex-wrap: wrap; }
 			.brand { font-size: 21px; }
-			nav { gap: 15px; font-size: 12px; }
+			nav { gap: 14px; font-size: 12px; }
 			.nav-note { display: none; }
 			.intro { padding: 42px 0 28px; }
 			.feature { grid-template-columns: 1fr; }
@@ -694,35 +722,6 @@
 		}
 		@media (prefers-reduced-motion: reduce) {
 			*, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
-		}
-
-		#stay-timer {
-			position: fixed;
-			bottom: 24px;
-			right: 24px;
-			background-color: var(--green);
-			color: var(--paper);
-			padding: 10px 16px;
-			border-radius: 20px;
-			font-size: 13px;
-			font-family: var(--sans);
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-			z-index: 1000;
-			opacity: 0.9;
-			transition: opacity 0.3s ease;
-		}
-
-		#stay-timer:hover {
-			opacity: 1;
-		}
-
-		@media (max-width: 700px) {
-			#stay-timer {
-				bottom: 16px;
-				right: 16px;
-				font-size: 12px;
-				padding: 8px 14px;
-			}
 		}
 	</style>
 </head>
@@ -751,6 +750,10 @@
 				<a href="#about">소개</a>
 				<a href="#subscribe">구독</a>
 				<span class="nav-note">2026년 가을, 서울</span>
+				<span class="stay-timer-pill" title="이 공간에 머무른 시간">
+					<span class="stay-timer-dot" aria-hidden="true"></span>
+					<span>머문 시간 <strong id="stay-timer">00:00</strong></span>
+				</span>
 			</nav>
 		</header>
 
@@ -768,10 +771,24 @@
 				</div>
 			</section>
 
-			<!-- 대표 글 (이번 주의 기록) -->
-			<article class="feature" id="feature-container"></article>
+			<!-- 대표 글 (초기 HTML에도 기본 마크업을 넣어두어 스크립트와 무관하게 절대 사라지지 않도록 보장) -->
+			<article class="feature" id="feature-container">
+				<a class="feature-image" href="#latest" data-open-post="post-1" aria-label="가을 아침 산책 이야기 읽기">
+					<img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=85" alt="안개가 낮게 내려앉은 가을 들판과 아침 햇살">
+				</a>
+				<div class="feature-copy">
+					<span class="eyebrow">이번 주의 기록</span>
+					<h2 data-open-post="post-1">아무도 없는 길을<br>오래 걷는 일</h2>
+					<p>조금 일찍 집을 나선 날, 익숙한 동네가 처음 보는 풍경처럼 느껴졌다. 서두르지 않는 아침에 대해.</p>
+					<span class="meta">2026. 10. 18 &nbsp; · &nbsp; 산책의 기록</span>
+					<div class="feature-actions">
+						<button type="button" class="read-link" data-open-post="post-1">이야기 읽기 <span aria-hidden="true">↗</span></button>
+						<button type="button" class="comment-pill" data-open-comments="post-1">💬 방문자 댓글 2개</button>
+					</div>
+				</div>
+			</article>
 
-			<!-- 최근의 기록 목록 -->
+			<!-- 최근의 기록 목록 (초기 HTML 폴백 포함) -->
 			<section class="latest" id="latest">
 				<div class="section-heading">
 					<div class="section-heading-left">
@@ -780,7 +797,44 @@
 					</div>
 					<a href="#subscribe">편지 받아보기 <span aria-hidden="true">↗</span></a>
 				</div>
-				<div class="posts" id="posts-grid"></div>
+				<div class="posts" id="posts-grid">
+					<article class="post">
+						<a class="post-image" href="#latest" data-open-post="post-2" aria-label="빛이 오래 머무는 책상 이야기">
+							<img src="https://images.unsplash.com/photo-1444628838545-ac4016a5418a?auto=format&fit=crop&w=900&q=80" alt="햇살이 비치는 나무 책상과 펼쳐진 책">
+						</a>
+						<p class="meta">2026. 10. 12 &nbsp; · &nbsp; 공간</p>
+						<h3 data-open-post="post-2">빛이 오래 머무는 책상</h3>
+						<p class="post-excerpt">작업하는 자리를 조금 바꾸었을 뿐인데, 하루의 리듬도 달라졌다.</p>
+						<div class="post-footer">
+							<button type="button" class="btn-text-read" data-open-post="post-2">전문 읽기 →</button>
+							<button type="button" class="comment-pill" data-open-comments="post-2">💬 댓글 1</button>
+						</div>
+					</article>
+					<article class="post">
+						<a class="post-image" href="#latest" data-open-post="post-3" aria-label="꽃 한 다발을 고르는 마음 이야기">
+							<img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=80" alt="분홍색과 흰색 꽃이 가득 핀 작은 꽃다발">
+						</a>
+						<p class="meta">2026. 10. 05 &nbsp; · &nbsp; 주말</p>
+						<h3 data-open-post="post-3">꽃 한 다발을 고르는 마음</h3>
+						<p class="post-excerpt">필요한 것은 아니지만 있으면 좋은 것들을 생각하는 토요일.</p>
+						<div class="post-footer">
+							<button type="button" class="btn-text-read" data-open-post="post-3">전문 읽기 →</button>
+							<button type="button" class="comment-pill" data-open-comments="post-3">💬 댓글 0</button>
+						</div>
+					</article>
+					<article class="post">
+						<a class="post-image" href="#latest" data-open-post="post-4" aria-label="비 오는 날의 문장들 이야기">
+							<img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=900&q=80" alt="책이 빼곡하게 꽂힌 조용한 도서관">
+						</a>
+						<p class="meta">2026. 09. 28 &nbsp; · &nbsp; 책</p>
+						<h3 data-open-post="post-4">비 오는 날의 문장들</h3>
+						<p class="post-excerpt">창밖의 빗소리와 나란히 읽기 좋은 문장들을 모았다.</p>
+						<div class="post-footer">
+							<button type="button" class="btn-text-read" data-open-post="post-4">전문 읽기 →</button>
+							<button type="button" class="comment-pill" data-open-comments="post-4">💬 댓글 1</button>
+						</div>
+					</article>
+				</div>
 			</section>
 
 			<section class="subscribe" id="subscribe" aria-labelledby="subscribe-title">
@@ -799,7 +853,7 @@
 
 		<footer>
 			<span>© 2026 느린 기록 · 나만 쓰는 블로그 & 방문자 열린 댓글장</span>
-			<span>오늘도 천천히, 잘 지내기</span>
+			<span id="footer-stay-note">오늘도 천천히, 잘 지내기 · 머문 시간 <span id="stay-timer-footer">0분 00초</span></span>
 		</footer>
 	</div>
 
@@ -961,36 +1015,850 @@
 
 	<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+	<!-- 독립 실행형 머문 시간 타이머 (블로그/로그인 스크립트와 완전히 분리하여 오류 방지) -->
 	<script>
-		document.querySelector("#subscribe-form").addEventListener("submit", (event) => {
-			event.preventDefault();
-			const email = document.querySelector("#email");
-			if (!email.checkValidity()) {
-				email.reportValidity();
-				return;
-			}
-			document.querySelector("#form-message").textContent = "구독 신청이 완료됐어요. 고맙습니다.";
-			event.currentTarget.reset();
-		});
+		(function initStayTimer() {
+			try {
+				let elapsedSeconds = 0;
+				const headerTimerEl = document.getElementById("stay-timer");
+				const footerTimerEl = document.getElementById("stay-timer-footer");
 
-		// Timer logic
-		window.addEventListener('DOMContentLoaded', () => {
-			const startTime = Date.now();
-			const timerElement = document.getElementById('stay-timer');
-
-			setInterval(() => {
-				const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-				const minutes = Math.floor(elapsedSeconds / 60);
-				const seconds = elapsedSeconds % 60;
-
-				if (minutes > 0) {
-					timerElement.textContent = `머문 시간 ${minutes}분 ${seconds}초`;
-				} else {
-					timerElement.textContent = `머문 시간 ${seconds}초`;
+				function updateTimerDisplay() {
+					const mins = Math.floor(elapsedSeconds / 60);
+					const secs = elapsedSeconds % 60;
+					const mm = String(mins).padStart(2, "0");
+					const ss = String(secs).padStart(2, "0");
+					if (headerTimerEl) {
+						headerTimerEl.textContent = `${mm}:${ss}`;
+					}
+					if (footerTimerEl) {
+						footerTimerEl.textContent = `${mins}분 ${ss}초`;
+					}
 				}
-			}, 1000);
-		});
+
+				setInterval(() => {
+					if (!document.hidden) {
+						elapsedSeconds += 1;
+						updateTimerDisplay();
+					}
+				}, 1000);
+			} catch (err) {
+				// 타이머 오류가 발생하더라도 블로그 렌더링에는 영향을 주지 않음
+			}
+		})();
 	</script>
-	<div id="stay-timer">머문 시간 0초</div>
+
+	<!-- 블로그 포스트 렌더링, 관리자 로그인, 방문자 댓글 스크립트 -->
+	<script>
+		(function initBlogApp() {
+			const STORAGE_KEY_POSTS = "slow_blog_posts_v1";
+			const STORAGE_KEY_OWNER_PW = "slow_blog_owner_pw_v1";
+			const STORAGE_KEY_IS_OWNER = "slow_blog_is_owner_v1";
+
+			const INITIAL_POSTS = [
+				{
+					id: "post-1",
+					title: "아무도 없는 길을\n오래 걷는 일",
+					category: "산책의 기록",
+					date: "2026. 10. 18",
+					image: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=85",
+					alt: "안개가 낮게 내려앉은 가을 들판과 아침 햇살",
+					excerpt: "조금 일찍 집을 나선 날, 익숙한 동네가 처음 보는 풍경처럼 느껴졌다. 서두르지 않는 아침에 대해.",
+					body: "조금 일찍 집을 나선 날이었습니다. 아직 상점들의 셔터가 올라가지 않은 골목에는 밤사이 내려앉은 서늘한 공기와 가로등의 잔광이 조용히 섞여 있었어요.\n\n매일 바쁘게 스쳐 지나가던 은행나무 가로수길도 발걸음을 늦추니 전혀 다른 표정을 보여주었습니다. 바람이 불 때마다 나뭇잎이 사각거리는 소리가 이어폰 속 음악보다 훨씬 선명하게 다가왔거든요.\n\n누군가와 속도를 맞추지 않아도 되는 아침 산책은 하루의 여백을 미리 확보해 두는 일 같습니다. 여러분은 요즘 어떤 길을 가장 자주 걸으시나요?",
+					isFeatured: true,
+					comments: [
+						{
+							id: "c-101",
+							author: "새벽산책자",
+							isOwner: false,
+							pw: "0000",
+							date: "2026. 10. 18 08:42",
+							text: "아침 공기가 글 너머로 전해지는 것 같아요. 저도 내일은 20분만 일찍 나와서 천천히 걸어봐야겠습니다."
+						},
+						{
+							id: "c-102",
+							author: "느린기록",
+							isOwner: true,
+							pw: "",
+							date: "2026. 10. 18 10:15",
+							text: "방문해 주셔서 고맙습니다 :) 이어폰을 잠시 빼고 걷는 아침 길이 참 좋더라고요. 따뜻한 하루 보내세요!"
+						}
+					]
+				},
+				{
+					id: "post-2",
+					title: "빛이 오래 머무는 책상",
+					category: "공간",
+					date: "2026. 10. 12",
+					image: "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?auto=format&fit=crop&w=900&q=80",
+					alt: "햇살이 비치는 나무 책상과 펼쳐진 책",
+					excerpt: "작업하는 자리를 조금 바꾸었을 뿐인데, 하루의 리듬도 달라졌다.",
+					body: "오랫동안 벽을 바라보며 놓여 있던 나무 책상을 창가 쪽으로 구십 도 돌려보았습니다. 대단한 가구 재배치는 아니었지만, 오후 두 시부터 네 시까지 책상 모서리로 길게 들어오는 햇살을 볼 수 있게 되었어요.\n\n자리 하나를 바꾸었을 뿐인데 책상에 앉아 있는 시간이 기다려지고, 노트를 펼치는 마음도 한결 가벼워졌습니다. 빛이 머무는 자리에 앉아 따뜻한 차를 마시며 이 글을 적습니다.",
+					isFeatured: false,
+					comments: [
+						{
+							id: "c-201",
+							author: "우드러버",
+							isOwner: false,
+							pw: "0000",
+							date: "2026. 10. 13 14:20",
+							text: "창가로 책상 방향 바꾸는 것만으로도 기분이 정말 새로워지죠! 사진 속 나무 결이 참 따뜻해 보여요."
+						}
+					]
+				},
+				{
+					id: "post-3",
+					title: "꽃 한 다발을 고르는 마음",
+					category: "주말",
+					date: "2026. 10. 05",
+					image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=80",
+					alt: "분홍색과 흰색 꽃이 가득 핀 작은 꽃다발",
+					excerpt: "필요한 것은 아니지만 있으면 좋은 것들을 생각하는 토요일.",
+					body: "토요일 정오 무렵 동네 작은 꽃집에 들렀습니다. 당장 생활에 꼭 필요한 물건은 아니지만, 유리 화병에 꽂아둘 계절 꽃 몇 대를 고르는 시간은 일주일의 피로를 부드럽게 씻어줍니다.\n\n이름이 조금 낯선 연분홍빛 소국과 유칼립투스를 한 단 안고 돌아오는 길, 엘리베이터 거울에 비친 제 표정이 평소보다 한결 느슨해져 있더군요.",
+					isFeatured: false,
+					comments: []
+				},
+				{
+					id: "post-4",
+					title: "비 오는 날의 문장들",
+					category: "책",
+					date: "2026. 09. 28",
+					image: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=900&q=80",
+					alt: "책이 빼곡하게 꽂힌 조용한 도서관",
+					excerpt: "창밖의 빗소리와 나란히 읽기 좋은 문장들을 모았다.",
+					body: "아침부터 일정한 간격으로 비가 내렸습니다. 이런 날에는 진도가 빠르게 나가는 이야기보다, 한 문장씩 곱씹으며 밑줄을 긋게 되는 오래된 산문집을 꺼내게 됩니다.\n\n'서두르지 않아도 계절은 제시간에 도착한다'는 문장 옆에 작은 연필 자국을 남겨두었습니다. 비 오는 날 여러분이 아껴 읽는 문장은 무엇인가요?",
+					isFeatured: false,
+					comments: [
+						{
+							id: "c-401",
+							author: "책방손님",
+							isOwner: false,
+							pw: "0000",
+							date: "2026. 09. 29 19:05",
+							text: "'서두르지 않아도 계절은 제시간에 도착한다'라는 문장이 오늘 저에게 꼭 필요했던 위로 같네요. 좋은 기록 감사합니다."
+						}
+					]
+				}
+			];
+
+			function safeGet(key, fallback) {
+				try {
+					const raw = localStorage.getItem(key);
+					if (!raw) return fallback;
+					const parsed = JSON.parse(raw);
+					return parsed !== null && parsed !== undefined ? parsed : fallback;
+				} catch (e) {
+					return fallback;
+				}
+			}
+
+			function safeSet(key, val) {
+				try {
+					localStorage.setItem(key, JSON.stringify(val));
+				} catch (e) {}
+			}
+
+			let posts = safeGet(STORAGE_KEY_POSTS, INITIAL_POSTS);
+			if (!Array.isArray(posts) || posts.length === 0) {
+				posts = INITIAL_POSTS;
+			}
+			let ownerPassword = String(safeGet(STORAGE_KEY_OWNER_PW, "1234") || "1234");
+			let isOwner = Boolean(safeGet(STORAGE_KEY_IS_OWNER, false));
+			let activeCategory = "전체";
+			let currentReadingPostId = null;
+			let pendingDeletePostId = null;
+			let loginModalMode = "login";
+			let deletingCommentId = null;
+
+			function showToast(msg) {
+				const toast = document.getElementById("toast");
+				if (!toast) return;
+				toast.textContent = msg;
+				toast.classList.add("show");
+				clearTimeout(showToast._timer);
+				showToast._timer = setTimeout(() => {
+					toast.classList.remove("show");
+				}, 2800);
+			}
+
+			function escapeHtml(str) {
+				return String(str || "")
+					.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/"/g, "&quot;")
+					.replace(/'/g, "&#39;");
+			}
+
+			function formatToday() {
+				const d = new Date();
+				const yyyy = d.getFullYear();
+				const mm = String(d.getMonth() + 1).padStart(2, "0");
+				const dd = String(d.getDate()).padStart(2, "0");
+				return `${yyyy}. ${mm}. ${dd}`;
+			}
+
+			function formatDateTime() {
+				const d = new Date();
+				const hh = String(d.getHours()).padStart(2, "0");
+				const min = String(d.getMinutes()).padStart(2, "0");
+				return `${formatToday()} ${hh}:${min}`;
+			}
+
+			function renderRoleState() {
+				const dot = document.getElementById("role-dot");
+				const badge = document.getElementById("role-badge");
+				const desc = document.getElementById("role-desc");
+				const btnWriteHeader = document.getElementById("btn-header-write");
+				const btnChangePw = document.getElementById("btn-change-pw");
+				const btnOwnerToggle = document.getElementById("btn-owner-toggle");
+				const heroActions = document.getElementById("owner-hero-actions");
+
+				if (isOwner) {
+					dot.classList.add("owner");
+					badge.classList.add("owner");
+					badge.textContent = "블로그 주인(나) 모드";
+					desc.textContent = "현재 블로그 주인으로 로그인되어 있습니다. 새 글을 작성하거나 기존 글·댓글을 관리할 수 있습니다.";
+					btnWriteHeader.style.display = "inline-flex";
+					btnChangePw.style.display = "inline-flex";
+					btnOwnerToggle.textContent = "방문자 화면으로 전환 (로그아웃)";
+					heroActions.style.display = "flex";
+				} else {
+					dot.classList.remove("owner");
+					badge.classList.remove("owner");
+					badge.textContent = "방문자 모드";
+					desc.textContent = "방문자는 모든 기록을 읽고 댓글을 달 수 있습니다. (포스트 작성·수정·삭제는 블로그 주인만 가능)";
+					btnWriteHeader.style.display = "none";
+					btnChangePw.style.display = "none";
+					btnOwnerToggle.textContent = "🔒 관리자(나) 로그인";
+					heroActions.style.display = "none";
+				}
+			}
+
+			function renderFeature() {
+				const container = document.getElementById("feature-container");
+				const featured = posts.find((p) => p.isFeatured) || posts[0];
+				if (!featured) {
+					container.style.display = "none";
+					return;
+				}
+				container.style.display = "grid";
+				const titleHtml = escapeHtml(featured.title).replace(/\n/g, "<br>");
+				const commentCount = (featured.comments || []).length;
+
+				container.innerHTML = `
+					<a class="feature-image" href="#latest" data-open-post="${escapeHtml(featured.id)}" aria-label="${escapeHtml(featured.title)} 이야기 읽기">
+						<img src="${escapeHtml(featured.image)}" alt="${escapeHtml(featured.alt || featured.title)}">
+					</a>
+					<div class="feature-copy">
+						<span class="eyebrow">이번 주의 기록</span>
+						<h2 data-open-post="${escapeHtml(featured.id)}">${titleHtml}</h2>
+						<p>${escapeHtml(featured.excerpt)}</p>
+						<span class="meta">${escapeHtml(featured.date)} &nbsp; · &nbsp; ${escapeHtml(featured.category)}</span>
+						<div class="feature-actions">
+							<button type="button" class="read-link" data-open-post="${escapeHtml(featured.id)}">이야기 읽기 <span aria-hidden="true">↗</span></button>
+							<button type="button" class="comment-pill" data-open-comments="${escapeHtml(featured.id)}">💬 방문자 댓글 ${commentCount}개</button>
+						</div>
+						${
+							isOwner
+								? `<div class="owner-inline-tools">
+										<button type="button" class="btn-mini" data-edit-post="${escapeHtml(featured.id)}">수정</button>
+										<button type="button" class="btn-mini danger" data-delete-post="${escapeHtml(featured.id)}">삭제</button>
+									</div>`
+								: ""
+						}
+					</div>
+				`;
+			}
+
+			function renderCategoryFilters() {
+				const holder = document.getElementById("category-filters");
+				const categories = ["전체"];
+				posts.forEach((p) => {
+					if (p.category && !categories.includes(p.category)) {
+						categories.push(p.category);
+					}
+				});
+				if (!categories.includes(activeCategory)) {
+					activeCategory = "전체";
+				}
+				holder.innerHTML = categories
+					.map(
+						(cat) => `
+						<button type="button" class="filter-btn ${cat === activeCategory ? "active" : ""}" data-filter-cat="${escapeHtml(cat)}">
+							${escapeHtml(cat)}
+						</button>
+					`
+					)
+					.join("");
+			}
+
+			function renderPostsGrid() {
+				const grid = document.getElementById("posts-grid");
+				const featured = posts.find((p) => p.isFeatured) || posts[0];
+				let list = posts.filter((p) => !featured || p.id !== featured.id);
+				if (activeCategory !== "전체") {
+					list = posts.filter((p) => p.category === activeCategory);
+				}
+				if (list.length === 0) {
+					list = posts;
+				}
+
+				grid.innerHTML = list
+					.map((post) => {
+						const commentCount = (post.comments || []).length;
+						const cleanTitle = escapeHtml(post.title).replace(/\n/g, " ");
+						return `
+						<article class="post">
+							<a class="post-image" href="#latest" data-open-post="${escapeHtml(post.id)}" aria-label="${cleanTitle} 이야기">
+								<img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.alt || cleanTitle)}">
+							</a>
+							<p class="meta">${escapeHtml(post.date)} &nbsp; · &nbsp; ${escapeHtml(post.category)}</p>
+							<h3 data-open-post="${escapeHtml(post.id)}">${cleanTitle}</h3>
+							<p class="post-excerpt">${escapeHtml(post.excerpt)}</p>
+							<div class="post-footer">
+								<button type="button" class="btn-text-read" data-open-post="${escapeHtml(post.id)}">전문 읽기 →</button>
+								<button type="button" class="comment-pill" data-open-comments="${escapeHtml(post.id)}">💬 댓글 ${commentCount}</button>
+							</div>
+							${
+								isOwner
+									? `<div class="owner-inline-tools">
+											<button type="button" class="btn-mini" data-edit-post="${escapeHtml(post.id)}">수정</button>
+											<button type="button" class="btn-mini danger" data-delete-post="${escapeHtml(post.id)}">삭제</button>
+										</div>`
+									: ""
+							}
+						</article>
+					`;
+					})
+					.join("");
+			}
+
+			function renderAll() {
+				renderRoleState();
+				renderFeature();
+				renderCategoryFilters();
+				renderPostsGrid();
+				if (currentReadingPostId) {
+					renderReaderModalContent(currentReadingPostId);
+				}
+			}
+
+			function openReaderModal(postId, scrollToComments) {
+				const post = posts.find((p) => p.id === postId);
+				if (!post) return;
+				currentReadingPostId = postId;
+				deletingCommentId = null;
+				renderReaderModalContent(postId);
+				const modal = document.getElementById("reader-modal");
+				modal.classList.add("open");
+				document.body.style.overflow = "hidden";
+
+				if (scrollToComments) {
+					setTimeout(() => {
+						const cSec = document.getElementById("comments-section");
+						if (cSec) cSec.scrollIntoView({ behavior: "smooth" });
+					}, 80);
+				} else {
+					modal.scrollTop = 0;
+				}
+			}
+
+			function closeReaderModal() {
+				currentReadingPostId = null;
+				deletingCommentId = null;
+				document.getElementById("reader-modal").classList.remove("open");
+				document.body.style.overflow = "";
+			}
+
+			function renderReaderModalContent(postId) {
+				const post = posts.find((p) => p.id === postId);
+				if (!post) return;
+
+				document.getElementById("reader-category").textContent = post.category;
+				document.getElementById("reader-image").src = post.image;
+				document.getElementById("reader-image").alt = post.alt || post.title;
+				document.getElementById("reader-title").textContent = post.title.replace(/\n/g, " ");
+				document.getElementById("reader-date").textContent = `${post.date}  ·  기록한 사람: 느린기록 (블로그 주인)`;
+				document.getElementById("reader-content").textContent = post.body;
+
+				const ownerControls = document.getElementById("reader-owner-controls");
+				ownerControls.style.display = isOwner ? "inline-flex" : "none";
+
+				const comments = post.comments || [];
+				document.getElementById("reader-comment-count-top").textContent = `방문자 댓글 ${comments.length}개`;
+				document.getElementById("comments-heading").textContent = `방문자 댓글 (${comments.length})`;
+
+				const credRow = document.getElementById("visitor-credentials-row");
+				const authorInput = document.getElementById("comment-author");
+				const pwInput = document.getElementById("comment-pw");
+				const roleIndicator = document.getElementById("comment-role-indicator");
+				const hintEl = document.getElementById("comment-form-hint");
+
+				if (isOwner) {
+					credRow.style.display = "none";
+					authorInput.required = false;
+					pwInput.required = false;
+					roleIndicator.textContent = "✓ 블로그 주인(느린기록) 이름으로 답글이 등록됩니다";
+					hintEl.textContent = "블로그 주인은 모든 방문자 댓글을 관리(삭제)할 수 있습니다.";
+				} else {
+					credRow.style.display = "grid";
+					authorInput.required = true;
+					pwInput.required = true;
+					roleIndicator.textContent = "방문자 누구나 작성 가능";
+					hintEl.textContent = "작성한 댓글은 입력한 비밀번호로 언제든 직접 삭제할 수 있어요.";
+				}
+
+				const listEl = document.getElementById("comment-list");
+				if (comments.length === 0) {
+					listEl.innerHTML = `<div class="comment-item" style="text-align:center; color:var(--muted); font-size:12.5px; padding:24px;">아직 남겨진 댓글이 없습니다. 첫 번째 방문자 댓글을 남겨보세요!</div>`;
+					return;
+				}
+
+				listEl.innerHTML = comments
+					.map((c) => {
+						const isDeletingThis = deletingCommentId === c.id;
+						return `
+						<div class="comment-item ${c.isOwner ? "owner-comment" : ""}">
+							<div class="comment-top">
+								<span class="comment-author">
+									${escapeHtml(c.author)}
+									${c.isOwner ? `<span class="owner-tag">블로그 주인</span>` : ""}
+								</span>
+								<div class="comment-item-actions">
+									<span class="comment-date">${escapeHtml(c.date)}</span>
+									<button type="button" class="btn-comment-act" data-req-del-comment="${escapeHtml(c.id)}">삭제</button>
+								</div>
+							</div>
+							<p class="comment-text">${escapeHtml(c.text)}</p>
+							${
+								isDeletingThis
+									? isOwner
+										? `<div class="comment-delete-box">
+												<span style="font-size:11.5px; color:var(--danger);">관리자 권한으로 이 댓글을 삭제할까요?</span>
+												<button type="button" class="btn-mini danger" data-confirm-del-comment="${escapeHtml(c.id)}">즉시 삭제</button>
+												<button type="button" class="btn-mini" data-cancel-del-comment="1">취소</button>
+											</div>`
+										: `<div class="comment-delete-box">
+												<input type="password" id="del-comment-pw-${escapeHtml(c.id)}" placeholder="댓글 비밀번호 입력">
+												<button type="button" class="btn-mini danger" data-confirm-del-comment="${escapeHtml(c.id)}">확인 후 삭제</button>
+												<button type="button" class="btn-mini" data-cancel-del-comment="1">취소</button>
+											</div>`
+									: ""
+							}
+						</div>
+					`;
+					})
+					.join("");
+			}
+
+			function openLoginModal(mode) {
+				loginModalMode = mode || "login";
+				const modal = document.getElementById("login-modal");
+				const title = document.getElementById("login-modal-title");
+				const desc = document.getElementById("login-modal-desc");
+				const pwLabel = document.getElementById("owner-pw-label");
+				const newPwGroup = document.getElementById("new-pw-group");
+				const feedback = document.getElementById("login-feedback");
+				const form = document.getElementById("login-form");
+
+				form.reset();
+				feedback.textContent = "";
+
+				if (loginModalMode === "change_pw") {
+					title.textContent = "관리자 비밀번호 변경";
+					desc.innerHTML = "현재 관리자 비밀번호를 확인한 뒤 새로운 비밀번호로 변경합니다.";
+					pwLabel.textContent = "현재 비밀번호";
+					newPwGroup.style.display = "block";
+					document.getElementById("owner-new-pw-input").required = true;
+				} else {
+					title.textContent = "블로그 주인(나) 인증";
+					desc.innerHTML = `블로깅(글 작성·수정·삭제)은 오직 블로그 주인만 할 수 있습니다.<br>관리자 비밀번호를 입력해 주세요. <strong style="color:var(--green);">(초기 비밀번호: ${escapeHtml(ownerPassword)})</strong>`;
+					pwLabel.textContent = "관리자 비밀번호";
+					newPwGroup.style.display = "none";
+					document.getElementById("owner-new-pw-input").required = false;
+				}
+
+				modal.classList.add("open");
+				setTimeout(() => document.getElementById("owner-pw-input").focus(), 50);
+			}
+
+			function closeLoginModal() {
+				document.getElementById("login-modal").classList.remove("open");
+			}
+
+			function openEditorModal(postId) {
+				if (!isOwner) {
+					openLoginModal("login");
+					return;
+				}
+				const modal = document.getElementById("editor-modal");
+				const titleEl = document.getElementById("editor-modal-title");
+				const idInput = document.getElementById("edit-post-id");
+				const titleInput = document.getElementById("post-title-input");
+				const catInput = document.getElementById("post-category-input");
+				const dateInput = document.getElementById("post-date-input");
+				const imgInput = document.getElementById("post-image-input");
+				const excerptInput = document.getElementById("post-excerpt-input");
+				const bodyInput = document.getElementById("post-body-input");
+				const featInput = document.getElementById("post-featured-input");
+
+				if (postId) {
+					const post = posts.find((p) => p.id === postId);
+					if (!post) return;
+					titleEl.textContent = "기록 수정하기";
+					idInput.value = post.id;
+					titleInput.value = post.title.replace(/\n/g, " ");
+					catInput.value = post.category;
+					dateInput.value = post.date;
+					imgInput.value = post.image;
+					excerptInput.value = post.excerpt;
+					bodyInput.value = post.body;
+					featInput.checked = Boolean(post.isFeatured);
+				} else {
+					titleEl.textContent = "새로운 기록 작성하기";
+					idInput.value = "";
+					titleInput.value = "";
+					catInput.value = "일상";
+					dateInput.value = formatToday();
+					imgInput.value = "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80";
+					excerptInput.value = "";
+					bodyInput.value = "";
+					featInput.checked = false;
+				}
+
+				modal.classList.add("open");
+			}
+
+			function closeEditorModal() {
+				document.getElementById("editor-modal").classList.remove("open");
+			}
+
+			function requestDeletePost(postId) {
+				if (!isOwner) return;
+				pendingDeletePostId = postId;
+				document.getElementById("delete-post-modal").classList.add("open");
+			}
+
+			function closeDeletePostModal() {
+				pendingDeletePostId = null;
+				document.getElementById("delete-post-modal").classList.remove("open");
+			}
+
+			document.getElementById("btn-owner-toggle").addEventListener("click", () => {
+				if (isOwner) {
+					isOwner = false;
+					safeSet(STORAGE_KEY_IS_OWNER, false);
+					renderAll();
+					showToast("방문자 모드로 전환되었습니다. 이제 방문자 시점에서 댓글을 테스트할 수 있어요.");
+				} else {
+					openLoginModal("login");
+				}
+			});
+
+			document.getElementById("btn-change-pw").addEventListener("click", () => {
+				openLoginModal("change_pw");
+			});
+
+			document.getElementById("btn-header-write").addEventListener("click", () => openEditorModal(null));
+			document.getElementById("btn-intro-write").addEventListener("click", () => openEditorModal(null));
+
+			document.getElementById("btn-cancel-login").addEventListener("click", closeLoginModal);
+			document.getElementById("login-form").addEventListener("submit", (e) => {
+				e.preventDefault();
+				const inputPw = document.getElementById("owner-pw-input").value.trim();
+				const feedback = document.getElementById("login-feedback");
+
+				if (inputPw !== ownerPassword) {
+					feedback.textContent = "비밀번호가 일치하지 않습니다. 다시 확인해 주세요.";
+					return;
+				}
+
+				if (loginModalMode === "change_pw") {
+					const newPw = document.getElementById("owner-new-pw-input").value.trim();
+					if (newPw.length < 4) {
+						feedback.textContent = "새 비밀번호는 4자 이상으로 입력해 주세요.";
+						return;
+					}
+					ownerPassword = newPw;
+					safeSet(STORAGE_KEY_OWNER_PW, ownerPassword);
+					closeLoginModal();
+					showToast("관리자 비밀번호가 변경되었습니다.");
+					return;
+				}
+
+				isOwner = true;
+				safeSet(STORAGE_KEY_IS_OWNER, true);
+				closeLoginModal();
+				renderAll();
+				showToast("블로그 주인(나)으로 로그인되었습니다. 이제 글을 쓰거나 수정할 수 있어요.");
+			});
+
+			document.getElementById("btn-cancel-editor").addEventListener("click", closeEditorModal);
+
+			document.querySelectorAll(".preset-chip[data-img]").forEach((btn) => {
+				btn.addEventListener("click", () => {
+					document.getElementById("post-image-input").value = btn.getAttribute("data-img");
+				});
+			});
+
+			document.getElementById("post-image-file").addEventListener("change", (e) => {
+				const file = e.target.files && e.target.files[0];
+				if (!file) return;
+				const reader = new FileReader();
+				reader.onload = () => {
+					if (typeof reader.result === "string") {
+						document.getElementById("post-image-input").value = reader.result;
+						showToast("선택한 사진이 커버 이미지로 적용되었습니다.");
+					}
+				};
+				reader.readAsDataURL(file);
+			});
+
+			document.getElementById("post-editor-form").addEventListener("submit", (e) => {
+				e.preventDefault();
+				if (!isOwner) return;
+
+				const editId = document.getElementById("edit-post-id").value;
+				const title = document.getElementById("post-title-input").value.trim();
+				const category = document.getElementById("post-category-input").value.trim() || "일상";
+				const date = document.getElementById("post-date-input").value.trim() || formatToday();
+				const image = document.getElementById("post-image-input").value.trim();
+				const excerpt = document.getElementById("post-excerpt-input").value.trim();
+				const body = document.getElementById("post-body-input").value.trim();
+				const isFeatured = document.getElementById("post-featured-input").checked;
+
+				if (!title || !excerpt || !body) return;
+
+				if (isFeatured) {
+					posts.forEach((p) => {
+						p.isFeatured = false;
+					});
+				}
+
+				if (editId) {
+					const target = posts.find((p) => p.id === editId);
+					if (target) {
+						target.title = title;
+						target.category = category;
+						target.date = date;
+						target.image = image;
+						target.alt = title;
+						target.excerpt = excerpt;
+						target.body = body;
+						target.isFeatured = isFeatured;
+					}
+					showToast("기록이 수정되었습니다.");
+				} else {
+					const newPost = {
+						id: "post-" + Date.now(),
+						title,
+						category,
+						date,
+						image,
+						alt: title,
+						excerpt,
+						body,
+						isFeatured,
+						comments: []
+					};
+					posts.unshift(newPost);
+					showToast("새로운 기록이 발행되었습니다.");
+				}
+
+				if (!posts.some((p) => p.isFeatured) && posts.length > 0) {
+					posts[0].isFeatured = true;
+				}
+
+				safeSet(STORAGE_KEY_POSTS, posts);
+				closeEditorModal();
+				renderAll();
+			});
+
+			document.getElementById("btn-cancel-delete-post").addEventListener("click", closeDeletePostModal);
+			document.getElementById("btn-confirm-delete-post").addEventListener("click", () => {
+				if (!isOwner || !pendingDeletePostId) return;
+				if (posts.length <= 1) {
+					closeDeletePostModal();
+					showToast("블로그에는 최소 1개의 기록이 남아 있어야 합니다.");
+					return;
+				}
+				const deletedId = pendingDeletePostId;
+				posts = posts.filter((p) => p.id !== deletedId);
+				if (!posts.some((p) => p.isFeatured) && posts.length > 0) {
+					posts[0].isFeatured = true;
+				}
+				safeSet(STORAGE_KEY_POSTS, posts);
+				closeDeletePostModal();
+				if (currentReadingPostId === deletedId) {
+					closeReaderModal();
+				}
+				renderAll();
+				showToast("기록이 삭제되었습니다.");
+			});
+
+			document.getElementById("btn-close-reader").addEventListener("click", closeReaderModal);
+			document.getElementById("btn-reader-edit").addEventListener("click", () => {
+				if (currentReadingPostId) {
+					openEditorModal(currentReadingPostId);
+				}
+			});
+			document.getElementById("btn-reader-delete").addEventListener("click", () => {
+				if (currentReadingPostId) {
+					requestDeletePost(currentReadingPostId);
+				}
+			});
+
+			document.getElementById("comment-form").addEventListener("submit", (e) => {
+				e.preventDefault();
+				if (!currentReadingPostId) return;
+				const post = posts.find((p) => p.id === currentReadingPostId);
+				if (!post) return;
+
+				const textEl = document.getElementById("comment-text");
+				const text = textEl.value.trim();
+				if (!text) return;
+
+				let author = "느린기록";
+				let pw = "";
+
+				if (!isOwner) {
+					author = document.getElementById("comment-author").value.trim() || "익명의 방문자";
+					pw = document.getElementById("comment-pw").value.trim();
+					if (!pw) {
+						showToast("추후 본인 확인을 위해 댓글 비밀번호를 입력해 주세요.");
+						return;
+					}
+				}
+
+				if (!Array.isArray(post.comments)) {
+					post.comments = [];
+				}
+
+				post.comments.push({
+					id: "c-" + Date.now(),
+					author,
+					isOwner: Boolean(isOwner),
+					pw,
+					date: formatDateTime(),
+					text
+				});
+
+				safeSet(STORAGE_KEY_POSTS, posts);
+				textEl.value = "";
+				renderAll();
+				showToast("댓글이 등록되었습니다. 고맙습니다!");
+			});
+
+			document.addEventListener("click", (e) => {
+				const openPostTrigger = e.target.closest("[data-open-post]");
+				if (openPostTrigger) {
+					e.preventDefault();
+					openReaderModal(openPostTrigger.getAttribute("data-open-post"), false);
+					return;
+				}
+
+				const openCommentsTrigger = e.target.closest("[data-open-comments]");
+				if (openCommentsTrigger) {
+					e.preventDefault();
+					openReaderModal(openCommentsTrigger.getAttribute("data-open-comments"), true);
+					return;
+				}
+
+				const editTrigger = e.target.closest("[data-edit-post]");
+				if (editTrigger) {
+					e.preventDefault();
+					openEditorModal(editTrigger.getAttribute("data-edit-post"));
+					return;
+				}
+
+				const deleteTrigger = e.target.closest("[data-delete-post]");
+				if (deleteTrigger) {
+					e.preventDefault();
+					requestDeletePost(deleteTrigger.getAttribute("data-delete-post"));
+					return;
+				}
+
+				const filterTrigger = e.target.closest("[data-filter-cat]");
+				if (filterTrigger) {
+					activeCategory = filterTrigger.getAttribute("data-filter-cat");
+					renderCategoryFilters();
+					renderPostsGrid();
+					return;
+				}
+
+				const reqDelComment = e.target.closest("[data-req-del-comment]");
+				if (reqDelComment) {
+					deletingCommentId = reqDelComment.getAttribute("data-req-del-comment");
+					renderReaderModalContent(currentReadingPostId);
+					return;
+				}
+
+				const cancelDelComment = e.target.closest("[data-cancel-del-comment]");
+				if (cancelDelComment) {
+					deletingCommentId = null;
+					renderReaderModalContent(currentReadingPostId);
+					return;
+				}
+
+				const confirmDelComment = e.target.closest("[data-confirm-del-comment]");
+				if (confirmDelComment && currentReadingPostId) {
+					const commentId = confirmDelComment.getAttribute("data-confirm-del-comment");
+					const post = posts.find((p) => p.id === currentReadingPostId);
+					if (!post || !Array.isArray(post.comments)) return;
+					const targetComment = post.comments.find((c) => c.id === commentId);
+					if (!targetComment) return;
+
+					if (!isOwner) {
+						const pwField = document.getElementById("del-comment-pw-" + commentId);
+						const enteredPw = pwField ? pwField.value.trim() : "";
+						if (targetComment.isOwner) {
+							showToast("블로그 주인의 댓글은 관리자 로그인 후에만 삭제할 수 있습니다.");
+							return;
+						}
+						if (enteredPw !== targetComment.pw) {
+							showToast("댓글 비밀번호가 일치하지 않습니다.");
+							return;
+						}
+					}
+
+					post.comments = post.comments.filter((c) => c.id !== commentId);
+					deletingCommentId = null;
+					safeSet(STORAGE_KEY_POSTS, posts);
+					renderAll();
+					showToast("댓글이 삭제되었습니다.");
+				}
+			});
+
+			["reader-modal", "login-modal", "editor-modal", "delete-post-modal"].forEach((id) => {
+				const backdrop = document.getElementById(id);
+				if (!backdrop) return;
+				backdrop.addEventListener("click", (e) => {
+					if (e.target === backdrop) {
+						if (id === "reader-modal") closeReaderModal();
+						if (id === "login-modal") closeLoginModal();
+						if (id === "editor-modal") closeEditorModal();
+						if (id === "delete-post-modal") closeDeletePostModal();
+					}
+				});
+			});
+
+			const subForm = document.querySelector("#subscribe-form");
+			if (subForm) {
+				subForm.addEventListener("submit", (event) => {
+					event.preventDefault();
+					const email = document.querySelector("#email");
+					if (!email.checkValidity()) {
+						email.reportValidity();
+						return;
+					}
+					document.querySelector("#form-message").textContent = "구독 신청이 완료됐어요. 고맙습니다.";
+					event.currentTarget.reset();
+				});
+			}
+
+			renderAll();
+		})();
+	</script>
 </body>
 </html>
