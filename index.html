@@ -13,12 +13,18 @@
 		:root {
 			color-scheme: light;
 			--paper: #f6f4ef;
+			--paper-deep: #eeeae0;
+			--card-bg: #faf9f5;
 			--ink: #252923;
 			--muted: #747970;
 			--line: #dcded6;
 			--green: #4c624d;
+			--green-dark: #394b3a;
+			--green-soft: #e6ece6;
+			--danger: #9e4747;
+			--danger-soft: #f9ebeb;
 			--serif: "Gowun Batang", Georgia, serif;
-			--sans: "DM Sans", sans-serif;
+			--sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 		}
 
 		* { box-sizing: border-box; }
@@ -31,8 +37,87 @@
 			-webkit-font-smoothing: antialiased;
 		}
 		a { color: inherit; text-decoration: none; }
-		button, input { font: inherit; }
+		button, input, textarea, select { font: inherit; color: inherit; }
 		.wrap { width: min(1120px, calc(100% - 64px)); margin: 0 auto; }
+
+		/* Top Role / Admin Status Bar */
+		.role-bar {
+			background: var(--paper-deep);
+			border-bottom: 1px solid var(--line);
+			font-size: 12px;
+			color: #52584f;
+		}
+		.role-bar-inner {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 9px 0;
+			flex-wrap: wrap;
+		}
+		.role-status {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.status-dot {
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: #9aa095;
+			display: inline-block;
+		}
+		.status-dot.owner {
+			background: var(--green);
+			box-shadow: 0 0 0 3px rgba(76, 98, 77, 0.18);
+		}
+		.role-badge {
+			display: inline-flex;
+			align-items: center;
+			padding: 2px 8px;
+			border-radius: 999px;
+			font-size: 11px;
+			font-weight: 600;
+			background: #e2e4dc;
+			color: #464b43;
+		}
+		.role-badge.owner {
+			background: var(--green);
+			color: #fff;
+		}
+		.role-actions {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			flex-wrap: wrap;
+		}
+		.btn-chip {
+			border: 1px solid var(--line);
+			background: var(--card-bg);
+			color: var(--ink);
+			padding: 5px 12px;
+			border-radius: 999px;
+			font-size: 11px;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all .2s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+		}
+		.btn-chip:hover {
+			border-color: var(--green);
+			color: var(--green);
+		}
+		.btn-chip.primary {
+			background: var(--green);
+			border-color: var(--green);
+			color: #fff;
+		}
+		.btn-chip.primary:hover {
+			background: var(--green-dark);
+			color: #fff;
+		}
 
 		header {
 			height: 82px;
@@ -43,40 +128,536 @@
 		}
 		.brand { font-family: var(--serif); font-size: 24px; font-weight: 700; letter-spacing: 0; }
 		.brand span { color: var(--green); }
-		nav { display: flex; align-items: center; gap: 34px; font-size: 13px; color: #52584f; }
+		nav { display: flex; align-items: center; gap: 28px; font-size: 13px; color: #52584f; }
 		nav a { transition: color .2s ease; }
 		nav a:hover { color: var(--green); }
 		.nav-note { font-size: 11px; color: var(--muted); letter-spacing: 0; }
 
-		.intro { padding: 66px 0 42px; }
+		.intro {
+			padding: 66px 0 42px;
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-end;
+			gap: 24px;
+			flex-wrap: wrap;
+		}
 		.eyebrow { color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
 		h1, h2, h3, p { margin-top: 0; }
 		.intro h1 { margin: 16px 0 12px; font: 400 clamp(34px, 5vw, 54px)/1.32 var(--serif); letter-spacing: 0; }
 		.intro p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
 
+		.owner-ActionBar {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.btn-write-main {
+			background: var(--green);
+			color: #fff;
+			border: 0;
+			padding: 11px 20px;
+			border-radius: 4px;
+			font-size: 13px;
+			font-family: var(--serif);
+			cursor: pointer;
+			transition: background .2s ease, transform .15s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.btn-write-main:hover {
+			background: var(--green-dark);
+			transform: translateY(-1px);
+		}
+
 		.feature { display: grid; grid-template-columns: 1.12fr .88fr; min-height: 410px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-		.feature-image { min-height: 410px; overflow: hidden; background: #d9ded6; }
+		.feature-image { min-height: 410px; overflow: hidden; background: #d9ded6; cursor: pointer; display: block; position: relative; }
 		.feature-image img { width: 100%; height: 100%; min-height: 410px; object-fit: cover; display: block; transition: transform .7s ease; }
 		.feature-image:hover img { transform: scale(1.025); }
 		.feature-copy { display: flex; flex-direction: column; justify-content: center; padding: 48px 8% 48px 10%; }
-		.feature-copy h2 { margin: 19px 0 14px; font: 400 clamp(27px, 3vw, 38px)/1.5 var(--serif); letter-spacing: 0; }
-		.feature-copy p { max-width: 370px; color: var(--muted); font-size: 13px; line-height: 1.9; }
-		.meta { color: var(--muted); font-size: 11px; }
-		.read-link { width: fit-content; margin-top: 20px; padding-bottom: 5px; border-bottom: 1px solid var(--green); color: var(--green); font-size: 12px; }
-		.read-link span { margin-left: 8px; }
+		.feature-copy h2 { margin: 19px 0 14px; font: 400 clamp(27px, 3vw, 38px)/1.5 var(--serif); letter-spacing: 0; cursor: pointer; }
+		.feature-copy h2:hover { color: var(--green); }
+		.feature-copy p { max-width: 390px; color: var(--muted); font-size: 13px; line-height: 1.9; }
+		.meta { color: var(--muted); font-size: 11px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+		.feature-actions {
+			display: flex;
+			align-items: center;
+			gap: 18px;
+			margin-top: 20px;
+			flex-wrap: wrap;
+		}
+		.read-link {
+			width: fit-content;
+			padding-bottom: 5px;
+			border-bottom: 1px solid var(--green);
+			color: var(--green);
+			font-size: 12px;
+			background: transparent;
+			border-top: 0;
+			border-left: 0;
+			border-right: 0;
+			padding-left: 0;
+			padding-right: 0;
+			cursor: pointer;
+		}
+		.read-link span { margin-left: 6px; }
+		.comment-pill {
+			border: 1px solid var(--line);
+			background: var(--card-bg);
+			color: #52584f;
+			font-size: 11px;
+			padding: 5px 11px;
+			border-radius: 999px;
+			cursor: pointer;
+			transition: all .2s ease;
+		}
+		.comment-pill:hover {
+			border-color: var(--green);
+			color: var(--green);
+		}
+
+		.owner-inline-tools {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			margin-top: 12px;
+		}
+		.btn-mini {
+			border: 1px solid var(--line);
+			background: #fff;
+			color: #52584f;
+			font-size: 11px;
+			padding: 3px 9px;
+			border-radius: 4px;
+			cursor: pointer;
+			transition: all .15s ease;
+		}
+		.btn-mini:hover {
+			border-color: var(--green);
+			color: var(--green);
+		}
+		.btn-mini.danger:hover {
+			border-color: var(--danger);
+			color: var(--danger);
+			background: var(--danger-soft);
+		}
 
 		.latest { padding: 66px 0 74px; }
-		.section-heading { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 25px; }
+		.section-heading { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 25px; gap: 16px; flex-wrap: wrap; }
+		.section-heading-left { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
 		.section-heading h2 { margin: 0; font: 400 25px var(--serif); }
 		.section-heading a { color: var(--muted); font-size: 11px; }
-		.posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-		.post { min-width: 0; }
-		.post-image { display: block; overflow: hidden; aspect-ratio: 1.42; background: #e4e4dc; }
+		.category-filters {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			flex-wrap: wrap;
+		}
+		.filter-btn {
+			border: 1px solid transparent;
+			background: transparent;
+			color: var(--muted);
+			font-size: 12px;
+			padding: 4px 10px;
+			border-radius: 999px;
+			cursor: pointer;
+			transition: all .2s ease;
+		}
+		.filter-btn:hover { color: var(--ink); }
+		.filter-btn.active {
+			border-color: var(--green);
+			color: var(--green);
+			background: var(--green-soft);
+			font-weight: 600;
+		}
+
+		.posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px 24px; }
+		.post {
+			min-width: 0;
+			display: flex;
+			flex-direction: column;
+		}
+		.post-image { display: block; overflow: hidden; aspect-ratio: 1.42; background: #e4e4dc; cursor: pointer; position: relative; }
 		.post-image img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .6s ease; }
 		.post-image:hover img { transform: scale(1.04); }
 		.post .meta { margin: 17px 0 9px; }
-		.post h3 { margin: 0 0 8px; font: 400 19px/1.55 var(--serif); }
-		.post > p:last-child { margin-bottom: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+		.post h3 { margin: 0 0 8px; font: 400 19px/1.55 var(--serif); cursor: pointer; transition: color .2s ease; }
+		.post h3:hover { color: var(--green); }
+		.post-excerpt { margin-bottom: 14px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+		.post-footer {
+			margin-top: auto;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+			padding-top: 10px;
+			border-top: 1px dashed var(--line);
+		}
+		.btn-text-read {
+			background: transparent;
+			border: 0;
+			padding: 0;
+			color: var(--green);
+			font-size: 12px;
+			cursor: pointer;
+			font-weight: 500;
+		}
+		.btn-text-read:hover { text-decoration: underline; }
+
+		/* Article Reader & Visitor Comments View (In-page Section / Modal) */
+		.reader-backdrop {
+			position: fixed;
+			inset: 0;
+			background: rgba(30, 34, 29, 0.48);
+			backdrop-filter: blur(2px);
+			display: none;
+			align-items: flex-start;
+			justify-content: center;
+			z-index: 100;
+			padding: 36px 16px;
+			overflow-y: auto;
+		}
+		.reader-backdrop.open { display: flex; }
+		.reader-sheet {
+			width: min(780px, 100%);
+			background: var(--paper);
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
+			overflow: hidden;
+			margin: auto 0;
+		}
+		.reader-topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 16px 28px;
+			border-bottom: 1px solid var(--line);
+			background: var(--card-bg);
+			position: sticky;
+			top: 0;
+			z-index: 2;
+		}
+		.reader-topbar-left {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.btn-close-modal {
+			border: 1px solid var(--line);
+			background: #fff;
+			color: var(--ink);
+			padding: 6px 13px;
+			border-radius: 4px;
+			font-size: 12px;
+			cursor: pointer;
+		}
+		.btn-close-modal:hover { border-color: var(--green); color: var(--green); }
+		.reader-hero {
+			width: 100%;
+			max-height: 360px;
+			object-fit: cover;
+			display: block;
+			background: #e4e4dc;
+		}
+		.reader-body {
+			padding: 36px 40px 32px;
+		}
+		.reader-title {
+			font: 400 clamp(26px, 3.5vw, 36px)/1.45 var(--serif);
+			margin: 12px 0 14px;
+		}
+		.reader-meta {
+			color: var(--muted);
+			font-size: 12px;
+			padding-bottom: 24px;
+			border-bottom: 1px solid var(--line);
+			margin-bottom: 28px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+		.reader-content {
+			font-family: var(--serif);
+			font-size: 16px;
+			line-height: 2.0;
+			color: #2c302a;
+			white-space: pre-line;
+		}
+
+		/* Visitor Comments Area */
+		.comments-section {
+			background: var(--card-bg);
+			border-top: 1px solid var(--line);
+			padding: 32px 40px 40px;
+		}
+		.comments-header {
+			display: flex;
+			align-items: baseline;
+			justify-content: space-between;
+			margin-bottom: 20px;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+		.comments-header h3 {
+			font: 700 18px var(--serif);
+			margin: 0;
+		}
+		.comments-notice {
+			font-size: 12px;
+			color: var(--muted);
+		}
+		.comment-list {
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+			margin-bottom: 26px;
+		}
+		.comment-item {
+			background: var(--paper);
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			padding: 16px 18px;
+		}
+		.comment-item.owner-comment {
+			border-left: 3px solid var(--green);
+			background: #f3f6f2;
+		}
+		.comment-top {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+			margin-bottom: 8px;
+			flex-wrap: wrap;
+		}
+		.comment-author {
+			font-weight: 600;
+			font-size: 13px;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.owner-tag {
+			background: var(--green);
+			color: #fff;
+			font-size: 10px;
+			padding: 1px 6px;
+			border-radius: 999px;
+			font-weight: 600;
+		}
+		.comment-date {
+			color: var(--muted);
+			font-size: 11px;
+		}
+		.comment-text {
+			font-size: 13.5px;
+			line-height: 1.75;
+			color: var(--ink);
+			margin: 0;
+			white-space: pre-line;
+		}
+		.comment-item-actions {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.btn-comment-act {
+			background: transparent;
+			border: 0;
+			color: var(--muted);
+			font-size: 11px;
+			cursor: pointer;
+			padding: 2px 4px;
+		}
+		.btn-comment-act:hover { color: var(--danger); text-decoration: underline; }
+		.comment-delete-box {
+			margin-top: 10px;
+			padding-top: 10px;
+			border-top: 1px dashed var(--line);
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+		.comment-delete-box input {
+			padding: 5px 9px;
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			font-size: 12px;
+			background: #fff;
+			width: 150px;
+		}
+
+		.comment-form {
+			background: var(--paper);
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			padding: 20px;
+		}
+		.comment-form-title {
+			font-family: var(--serif);
+			font-size: 15px;
+			font-weight: 700;
+			margin-bottom: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.comment-form-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+			margin-bottom: 10px;
+		}
+		.field-input, .field-textarea, .field-select {
+			width: 100%;
+			padding: 10px 12px;
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			background: #fff;
+			font-size: 13px;
+			color: var(--ink);
+			outline: none;
+		}
+		.field-input:focus, .field-textarea:focus, .field-select:focus {
+			border-color: var(--green);
+			box-shadow: 0 0 0 2px rgba(76, 98, 77, 0.15);
+		}
+		.field-textarea {
+			resize: vertical;
+			min-height: 84px;
+			line-height: 1.65;
+		}
+		.comment-form-footer {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 12px;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+		.comment-form-hint {
+			font-size: 11px;
+			color: var(--muted);
+		}
+		.btn-submit-comment {
+			background: var(--green);
+			color: #fff;
+			border: 0;
+			padding: 9px 18px;
+			border-radius: 4px;
+			font-size: 12.5px;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.btn-submit-comment:hover { background: var(--green-dark); }
+
+		/* Dialog Modals (Admin Login / Post Editor / Delete Confirm) */
+		.dialog-backdrop {
+			position: fixed;
+			inset: 0;
+			background: rgba(30, 34, 29, 0.52);
+			backdrop-filter: blur(2px);
+			display: none;
+			align-items: center;
+			justify-content: center;
+			z-index: 120;
+			padding: 20px;
+			overflow-y: auto;
+		}
+		.dialog-backdrop.open { display: flex; }
+		.dialog-card {
+			width: min(560px, 100%);
+			background: var(--paper);
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			padding: 28px 30px;
+			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+			max-height: 92vh;
+			overflow-y: auto;
+		}
+		.dialog-card.narrow { width: min(410px, 100%); }
+		.dialog-card h3 {
+			font: 700 21px var(--serif);
+			margin: 0 0 6px;
+		}
+		.dialog-sub {
+			font-size: 12.5px;
+			color: var(--muted);
+			margin-bottom: 20px;
+			line-height: 1.6;
+		}
+		.form-group { margin-bottom: 15px; }
+		.form-group label {
+			display: block;
+			font-size: 12px;
+			font-weight: 600;
+			margin-bottom: 6px;
+			color: #464b43;
+		}
+		.preset-chips {
+			display: flex;
+			gap: 6px;
+			flex-wrap: wrap;
+			margin-top: 7px;
+		}
+		.preset-chip {
+			font-size: 11px;
+			padding: 3px 8px;
+			border-radius: 4px;
+			border: 1px solid var(--line);
+			background: var(--card-bg);
+			cursor: pointer;
+			color: var(--muted);
+		}
+		.preset-chip:hover { border-color: var(--green); color: var(--green); }
+		.checkbox-row {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 12.5px;
+			color: #464b43;
+			cursor: pointer;
+		}
+		.dialog-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+			margin-top: 22px;
+			padding-top: 16px;
+			border-top: 1px solid var(--line);
+		}
+		.form-feedback {
+			font-size: 12px;
+			color: var(--danger);
+			margin-top: 8px;
+			min-height: 18px;
+		}
+
+		/* Toast Notification */
+		.toast {
+			position: fixed;
+			bottom: 24px;
+			right: 24px;
+			background: var(--ink);
+			color: #fff;
+			padding: 11px 18px;
+			border-radius: 6px;
+			font-size: 12.5px;
+			box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+			opacity: 0;
+			transform: translateY(10px);
+			pointer-events: none;
+			transition: all .25s ease;
+			z-index: 200;
+		}
+		.toast.show {
+			opacity: 1;
+			transform: translateY(0);
+		}
 
 		.subscribe { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 32px; padding: 35px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 		.subscribe h2 { margin: 0 0 7px; font: 400 21px var(--serif); }
@@ -86,15 +667,17 @@
 		.subscribe input:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 		.subscribe button { flex: 0 0 auto; border: 0; background: transparent; color: var(--green); cursor: pointer; font-size: 12px; }
 		#form-message { grid-column: 2; min-height: 16px; margin: -24px 0 0; color: var(--green); font-size: 11px; text-align: right; }
-		footer { display: flex; justify-content: space-between; padding: 25px 0 32px; color: var(--muted); font-size: 10px; }
+		footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 25px 0 32px; color: var(--muted); font-size: 10px; }
+
+		.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 		@media (max-width: 700px) {
 			.wrap { width: min(100% - 36px, 520px); }
 			header { height: 68px; }
 			.brand { font-size: 21px; }
-			nav { gap: 17px; font-size: 12px; }
+			nav { gap: 15px; font-size: 12px; }
 			.nav-note { display: none; }
-			.intro { padding: 48px 0 30px; }
+			.intro { padding: 42px 0 28px; }
 			.feature { grid-template-columns: 1fr; }
 			.feature-image, .feature-image img { min-height: 0; height: auto; aspect-ratio: 1.35; }
 			.feature-copy { padding: 28px 0 32px; }
@@ -103,6 +686,8 @@
 			.posts { grid-template-columns: 1fr; gap: 32px; }
 			.post-image { aspect-ratio: 1.65; }
 			.post h3 { font-size: 20px; }
+			.reader-body, .comments-section { padding: 24px 20px; }
+			.comment-form-row { grid-template-columns: 1fr; }
 			.subscribe { grid-template-columns: 1fr; gap: 20px; padding: 28px 0; }
 			.subscribe form { width: 100%; }
 			#form-message { grid-column: 1; margin: -14px 0 0; text-align: left; }
@@ -142,67 +727,60 @@
 	</style>
 </head>
 <body>
+	<!-- 상단 권한/모드 안내 바: 블로깅은 관리자(나)만 가능, 방문자는 글 읽기 및 댓글 작성만 가능 -->
+	<div class="role-bar">
+		<div class="wrap role-bar-inner">
+			<div class="role-status">
+				<span id="role-dot" class="status-dot"></span>
+				<span id="role-badge" class="role-badge">방문자 모드</span>
+				<span id="role-desc">방문자는 글을 읽고 자유롭게 댓글을 남길 수 있습니다. (글 작성·수정·삭제는 블로그 주인만 가능)</span>
+			</div>
+			<div class="role-actions">
+				<button type="button" id="btn-header-write" class="btn-chip primary" style="display:none;">✎ 새 기록 쓰기</button>
+				<button type="button" id="btn-change-pw" class="btn-chip" style="display:none;">비밀번호 변경</button>
+				<button type="button" id="btn-owner-toggle" class="btn-chip">🔒 관리자(나) 로그인</button>
+			</div>
+		</div>
+	</div>
+
 	<div class="wrap">
 		<header>
 			<a class="brand" href="#top" aria-label="느린 기록 홈">느린<span>기록</span></a>
 			<nav aria-label="주 메뉴">
 				<a href="#latest">글 모아보기</a>
 				<a href="#about">소개</a>
+				<a href="#subscribe">구독</a>
 				<span class="nav-note">2026년 가을, 서울</span>
 			</nav>
 		</header>
 
 		<main id="top">
 			<section class="intro" id="about">
-				<span class="eyebrow">Notes from ordinary days</span>
-				<h1>천천히 바라보면<br>다르게 보이는 것들.</h1>
-				<p>계절과 산책, 책과 작은 취향을 기록합니다.<br>오늘의 마음에 조용히 닿는 이야기를 모아요.</p>
+				<div>
+					<span class="eyebrow">Notes from ordinary days</span>
+					<h1>천천히 바라보면<br>다르게 보이는 것들.</h1>
+					<p>계절과 산책, 책과 작은 취향을 기록합니다.<br>오늘의 마음에 조용히 닿는 이야기를 모아요. 방문자분들은 각 기록마다 따뜻한 댓글을 남기실 수 있어요.</p>
+				</div>
+				<div class="owner-ActionBar" id="owner-hero-actions" style="display:none;">
+					<button type="button" id="btn-intro-write" class="btn-write-main">
+						<span>+ 나만의 새 글 기록하기</span>
+					</button>
+				</div>
 			</section>
 
-			<article class="feature">
-				<a class="feature-image" href="#latest" aria-label="가을 아침 산책 이야기 읽기">
-					<img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=85" alt="안개가 낮게 내려앉은 가을 들판과 아침 햇살">
-				</a>
-				<div class="feature-copy">
-					<span class="eyebrow">이번 주의 기록</span>
-					<h2>아무도 없는 길을<br>오래 걷는 일</h2>
-					<p>조금 일찍 집을 나선 날, 익숙한 동네가 처음 보는 풍경처럼 느껴졌다. 서두르지 않는 아침에 대해.</p>
-					<span class="meta">2026. 10. 18 &nbsp; · &nbsp; 산책의 기록</span>
-					<a class="read-link" href="#latest">이야기 읽기 <span aria-hidden="true">↗</span></a>
-				</div>
-			</article>
+			<!-- 대표 글 (이번 주의 기록) -->
+			<article class="feature" id="feature-container"></article>
 
+			<!-- 최근의 기록 목록 -->
 			<section class="latest" id="latest">
 				<div class="section-heading">
-					<h2>최근의 기록</h2>
+					<div class="section-heading-left">
+						<h2>최근의 기록</h2>
+						<div class="category-filters" id="category-filters" role="tablist" aria-label="카테고리 필터"></div>
+					</div>
 					<a href="#subscribe">편지 받아보기 <span aria-hidden="true">↗</span></a>
 				</div>
-				<div class="posts">
-					<article class="post">
-						<a class="post-image" href="#subscribe" aria-label="빛이 머무는 책상 이야기">
-							<img src="https://images.unsplash.com/photo-1444628838545-ac4016a5418a?auto=format&fit=crop&w=900&q=80" alt="햇살이 비치는 나무 책상과 펼쳐진 책">
-						</a>
-						<p class="meta">2026. 10. 12 &nbsp; · &nbsp; 공간</p>
-						<h3>빛이 오래 머무는 책상</h3>
-						<p>작업하는 자리를 조금 바꾸었을 뿐인데, 하루의 리듬도 달라졌다.</p>
-					</article>
-					<article class="post">
-						<a class="post-image" href="#subscribe" aria-label="주말의 작은 꽃 시장 이야기">
-							<img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=80" alt="분홍색과 흰색 꽃이 가득 핀 작은 꽃다발">
-						</a>
-						<p class="meta">2026. 10. 05 &nbsp; · &nbsp; 주말</p>
-						<h3>꽃 한 다발을 고르는 마음</h3>
-						<p>필요한 것은 아니지만 있으면 좋은 것들을 생각하는 토요일.</p>
-					</article>
-					<article class="post">
-						<a class="post-image" href="#subscribe" aria-label="비 오는 날 읽은 책 이야기">
-							<img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=900&q=80" alt="책이 빼곡하게 꽂힌 조용한 도서관">
-						</a>
-						<p class="meta">2026. 09. 28 &nbsp; · &nbsp; 책</p>
-						<h3>비 오는 날의 문장들</h3>
-						<p>창밖의 빗소리와 나란히 읽기 좋은 문장들을 모았다.</p>
-					</article>
-				</div>
+				<div class="posts" id="posts-grid"></div>
 			</section>
 
 			<section class="subscribe" id="subscribe" aria-labelledby="subscribe-title">
@@ -220,13 +798,169 @@
 		</main>
 
 		<footer>
-			<span>© 2026 느린 기록</span>
+			<span>© 2026 느린 기록 · 나만 쓰는 블로그 & 방문자 열린 댓글장</span>
 			<span>오늘도 천천히, 잘 지내기</span>
 		</footer>
 	</div>
-	<style>
-		.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-	</style>
+
+	<!-- 1. 글 상세 읽기 & 방문자 댓글 모달 -->
+	<div class="reader-backdrop" id="reader-modal" role="dialog" aria-modal="true" aria-labelledby="reader-title">
+		<div class="reader-sheet">
+			<div class="reader-topbar">
+				<div class="reader-topbar-left">
+					<span class="eyebrow" id="reader-category">산책의 기록</span>
+					<div id="reader-owner-controls" style="display:none; gap:6px;">
+						<button type="button" id="btn-reader-edit" class="btn-mini">글 수정</button>
+						<button type="button" id="btn-reader-delete" class="btn-mini danger">글 삭제</button>
+					</div>
+				</div>
+				<button type="button" id="btn-close-reader" class="btn-close-modal">닫기 ✕</button>
+			</div>
+			<img id="reader-image" class="reader-hero" src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=85" alt="">
+			<div class="reader-body">
+				<h2 class="reader-title" id="reader-title">제목</h2>
+				<div class="reader-meta">
+					<span id="reader-date">2026. 10. 18 · 작성자: 느린기록(블로그 주인)</span>
+					<span id="reader-comment-count-top">댓글 0개</span>
+				</div>
+				<div class="reader-content" id="reader-content"></div>
+			</div>
+
+			<!-- 방문자 댓글 섹션 -->
+			<section class="comments-section" id="comments-section" aria-label="방문자 댓글">
+				<div class="comments-header">
+					<h3 id="comments-heading">방문자 댓글 (0)</h3>
+					<span class="comments-notice">방문자 누구나 로그인 없이 댓글을 남길 수 있습니다.</span>
+				</div>
+
+				<div class="comment-list" id="comment-list"></div>
+
+				<form class="comment-form" id="comment-form">
+					<div class="comment-form-title">
+						<span>댓글 남기기</span>
+						<span id="comment-role-indicator" style="font-size:11px; font-family:var(--sans); font-weight:500; color:var(--green);"></span>
+					</div>
+					<div class="comment-form-row" id="visitor-credentials-row">
+						<div>
+							<label for="comment-author" class="visually-hidden">방문자 이름 또는 닉네임</label>
+							<input id="comment-author" class="field-input" type="text" placeholder="방문자 닉네임 (예: 가을산책자)" maxlength="24" required>
+						</div>
+						<div>
+							<label for="comment-pw" class="visually-hidden">댓글 삭제용 비밀번호</label>
+							<input id="comment-pw" class="field-input" type="password" placeholder="댓글 비밀번호 (본인 삭제용)" maxlength="16" required>
+						</div>
+					</div>
+					<div>
+						<label for="comment-text" class="visually-hidden">댓글 내용</label>
+						<textarea id="comment-text" class="field-textarea" placeholder="이 기록에 대한 생각이나 안부를 편하게 남겨주세요." maxlength="600" required></textarea>
+					</div>
+					<div class="comment-form-footer">
+						<span class="comment-form-hint" id="comment-form-hint">작성한 댓글은 입력한 비밀번호로 언제든 직접 삭제할 수 있어요.</span>
+						<button type="submit" class="btn-submit-comment">댓글 등록하기</button>
+					</div>
+				</form>
+			</section>
+		</div>
+	</div>
+
+	<!-- 2. 관리자(블로그 주인) 로그인 & 비밀번호 변경 모달 -->
+	<div class="dialog-backdrop" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+		<div class="dialog-card narrow">
+			<h3 id="login-modal-title">블로그 주인 인증</h3>
+			<p class="dialog-sub" id="login-modal-desc">
+				블로깅(새 글 작성·수정·삭제)은 오직 블로그 주인만 할 수 있습니다.<br>
+				관리자 비밀번호를 입력해 주세요. <strong style="color:var(--green);">(초기 비밀번호: 1234)</strong>
+			</p>
+			<form id="login-form">
+				<div class="form-group">
+					<label for="owner-pw-input" id="owner-pw-label">관리자 비밀번호</label>
+					<input id="owner-pw-input" class="field-input" type="password" placeholder="비밀번호 입력 (초기값 1234)" autocomplete="current-password" required>
+				</div>
+				<div class="form-group" id="new-pw-group" style="display:none;">
+					<label for="owner-new-pw-input">새로운 관리자 비밀번호</label>
+					<input id="owner-new-pw-input" class="field-input" type="password" placeholder="변경할 새 비밀번호 (4자 이상)">
+				</div>
+				<p class="form-feedback" id="login-feedback" role="alert"></p>
+				<div class="dialog-actions">
+					<button type="button" id="btn-cancel-login" class="btn-close-modal">취소</button>
+					<button type="submit" class="btn-submit-comment" id="btn-submit-login">확인</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- 3. 나만의 글쓰기 / 수정 모달 (관리자 전용) -->
+	<div class="dialog-backdrop" id="editor-modal" role="dialog" aria-modal="true" aria-labelledby="editor-modal-title">
+		<div class="dialog-card">
+			<h3 id="editor-modal-title">새로운 기록 작성하기</h3>
+			<p class="dialog-sub">나만 작성할 수 있는 블로그 공간입니다. 작성한 글에는 방문자들이 댓글을 남길 수 있습니다.</p>
+			<form id="post-editor-form">
+				<input type="hidden" id="edit-post-id">
+				<div class="form-group">
+					<label for="post-title-input">제목</label>
+					<input id="post-title-input" class="field-input" type="text" placeholder="예: 창문을 열면 먼저 들어오는 계절" required>
+				</div>
+				<div class="comment-form-row">
+					<div class="form-group" style="margin-bottom:0;">
+						<label for="post-category-input">분류 (카테고리)</label>
+						<input id="post-category-input" class="field-input" type="text" placeholder="산책의 기록, 공간, 주말, 책 등" required>
+					</div>
+					<div class="form-group" style="margin-bottom:0;">
+						<label for="post-date-input">날짜 표기</label>
+						<input id="post-date-input" class="field-input" type="text" placeholder="2026. 11. 09" required>
+					</div>
+				</div>
+				<div class="form-group" style="margin-top:15px;">
+					<label for="post-image-input">커버 이미지 주소 (또는 아래 분위기 사진 선택 / 파일 첨부)</label>
+					<input id="post-image-input" class="field-input" type="url" placeholder="https://images.unsplash.com/..." required>
+					<div class="preset-chips">
+						<button type="button" class="preset-chip" data-img="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=85">가을 들판</button>
+						<button type="button" class="preset-chip" data-img="https://images.unsplash.com/photo-1444628838545-ac4016a5418a?auto=format&fit=crop&w=900&q=80">나무 책상</button>
+						<button type="button" class="preset-chip" data-img="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=80">주말 꽃다발</button>
+						<button type="button" class="preset-chip" data-img="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=900&q=80">조용한 서재</button>
+						<button type="button" class="preset-chip" data-img="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80">따뜻한 커피</button>
+						<label class="preset-chip" style="margin:0; font-weight:500; cursor:pointer;">
+							내 기기 사진 선택
+							<input type="file" id="post-image-file" accept="image/*" style="display:none;">
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="post-excerpt-input">짧은 요약 (목록 카드에 표시)</label>
+					<input id="post-excerpt-input" class="field-input" type="text" placeholder="한두 문장으로 글의 분위기를 전해 주세요." required>
+				</div>
+				<div class="form-group">
+					<label for="post-body-input">본문 이야기</label>
+					<textarea id="post-body-input" class="field-textarea" style="min-height:170px;" placeholder="오늘 오래 남은 장면과 생각을 천천히 적어보세요." required></textarea>
+				</div>
+				<div class="form-group">
+					<label class="checkbox-row">
+						<input type="checkbox" id="post-featured-input">
+						<span>이 글을 상단 '이번 주의 기록(대표 글)'으로 지정하기</span>
+					</label>
+				</div>
+				<div class="dialog-actions">
+					<button type="button" id="btn-cancel-editor" class="btn-close-modal">취소</button>
+					<button type="submit" class="btn-submit-comment">기록 발행하기</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- 4. 글 삭제 확인 모달 (관리자 전용) -->
+	<div class="dialog-backdrop" id="delete-post-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+		<div class="dialog-card narrow">
+			<h3 id="delete-modal-title">이 기록을 삭제할까요?</h3>
+			<p class="dialog-sub">삭제한 글과 해당 글에 달린 방문자 댓글은 복구할 수 없습니다.</p>
+			<div class="dialog-actions">
+				<button type="button" id="btn-cancel-delete-post" class="btn-close-modal">취소</button>
+				<button type="button" id="btn-confirm-delete-post" class="btn-submit-comment" style="background:var(--danger);">삭제하기</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
 	<script>
 		document.querySelector("#subscribe-form").addEventListener("submit", (event) => {
 			event.preventDefault();
